@@ -1,0 +1,51 @@
+#+TITLE: Ox-foswiki export backend
+#+STARTUP: indent
+#+TAGS: @work @home @bibliothek @inovex @pf @we @schömberg @computer
+
+* Supported elements
+
+** Headings
+
+Foswiki supports 6 levels of headlines. This number is hard-coded -- the 
+variable =org-export-headline-levels= has no effect on the export.
+
+*** TODO Use the *TOC* macro for table of contents
+
+*** Level 3
+
+**** Level 4
+
+***** Level 5
+
+****** Level 6
+
+Deeper levels of headings are exported as a simple bulleted list.
+
+
+******* Level 7
+
+Text paragraph following heading of level 7.
+
+** Text formatting - inline
+
+/italic/ is ~_italic_~
+_underlined_ 
+*bold* is ~*bold*~
+=code= is ~<literal>code</literal>~
+~verbatim /a/ _b_ *c* =d= text~ is ~<verbatim></verbatim>~ 
++strike-through+ - TODO: is not mapped 
+
+** Text formatting - blocks
+*** Source code block
+#+BEGIN_SRC perl
+print("hello world\n");
+#+END_SRC
+**** TODO content is missing
+*** Quote block
+#+BEGIN_QUOTE
+The early bird gets the worm. 
+But it's the second mouse that gets the cheese.
+#+END_QUOTE
+**** TODO still markdown
+** Lists
+*** TODO fix error

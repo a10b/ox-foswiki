@@ -1,6 +1,8 @@
 ;;; ox-foswiki --- Foswiki (https://foswiki.org) Back-End for Org Export Engine, 
 ;;; modeled after the Markdown export engine (ox-md.el)
 
+;; WORK IN PROGRESS
+
 ;; Copyright (C) 2015 Alexander Bub
 
 ;; Author: Alexander Bub
@@ -37,6 +39,7 @@
 (eval-when-compile (require 'cl))
 (require 'ox-html)
 (require 'ox-publish)
+(require 'ox-md)
 (require 'ert)
 
 
@@ -53,21 +56,20 @@
 
 ;;; Define Back-End
 
-(org-export-define-derived-backend 'foswiki 'html
-
+(org-export-define-derived-backend 'foswiki 'md
   :export-block '("TWIKI" "FOSWIKI")
-  :filters-alist '(:filter-parse-tree . org-fw-separate-elements)
+  ;;:filters-alist '(:filter-parse-tree . org-fw-separate-elements)
   :menu-entry
   '(?f "Export to Foswiki"
-       ((?b "To temporary buffer"
-	    (lambda (a s v b) (org-fw-export-as-markdown a s v)))
-	(?f "To file" (lambda (a s v b) (org-fw-export-to-markdown a s v)))
-	(?F "To file and open"
+       ((?f "To temporary buffer"
+	    (lambda (a s v b) (org-fw-export-as-fw a s v)))
+	(?F "To file" (lambda (a s v b) (org-fw-export-as-fw a s v)))
+	(?O "To file and open"
 	    (lambda (a s v b)
-	      (if a (org-fw-export-to-markdown t s v)
+	      (if a (org-fw-export-as-fw t s v)
 		(org-open-file (org-fw-export-to-markdown nil s v)))))))
   :translate-alist '((bold . org-fw-bold)
-		     (code . org-fw-verbatim)
+		     (code . org-fw-code)
 		     (example-block . org-fw-example-block)
 		     (export-block . org-fw-export-block)
 		     (fixed-width . org-fw-example-block)
@@ -89,7 +91,8 @@
 		     (section . org-fw-section)
 		     (src-block . org-fw-example-block)
 		     (template . org-fw-template)
-		     (verbatim . org-fw-verbatim))
+		     (verbatim . org-fw-verbatim)
+                     (strike-through . org-fw-strike-through))
   :options-alist '((:fw-dummy-option nil "fw-dummy-option" org-fw-dummy-option t)))
 
 
@@ -150,14 +153,31 @@ a communication channel."
   (should (equal (org-fw-bold nil "text" nil) "*text*"))
   (should (equal (org-fw-bold nil "3 * 4" nil) "*3 * 4*")))
 
-;;;; Code and Verbatim
+;;;; Verbatim
 
 (defun org-fw-verbatim (verbatim contents info)
   "Transcode VERBATIM object into Foswiki format.
 CONTENTS is nil.  INFO is a plist used as a communication
 channel."
-  (format "=%s=" contents))
+  (let ((value (org-element-property :value verbatim)))
+    (format "<verbatim>%s</verbatim>" value)))
 
+;;;; Code
+
+(defun org-fw-code (code contents info)
+  "Transcode CODE object into Foswiki format.
+CONTENTS is nil.  INFO is a plist used as a communication
+channel."
+  (let ((value (org-element-property :value code)))
+    (format "<verbatim>%s</verbatim>" value)))
+
+;;;; Strike-through
+
+(defun org-fw-strike-through (strike-through contents info)
+  "Transcode STRIKE-THROUGH object into Foswiki format.
+CONTENTS is the text within strike-through markup.  INFO is a plist used as
+a communication channel."
+  (format "<strike>%s</strike>" contents))
 
 ;;;; Example Block, Src Block and export Block
 
@@ -214,19 +234,15 @@ a communication channel."
 	   (heading (concat todo priority title)))
 
       (cond
-       ;; Cannot create a headline.  Fall-back to a list.
-       ((or (org-export-low-level-p headline info)
-	    (> level 6))
-	(let ((bullet
-	       (if (not (org-export-numbered-headline-p headline info)) "*"
-		 (concat (number-to-string
-			  (car (last (org-export-get-headline-number
-				      headline info))))
-			 "."))))
-	  (concat bullet (make-string (- 4 (length bullet)) ?\s) heading tags
+       ;; Cannot create a headline.  Fall back to a list.
+       ;; ((or (org-export-low-level-p headline info)
+       ;;    (> level 6))
+       ((> level 6)
+	(let ((bullet "   * "))
+	  (concat bullet heading tags
 		  "\n\n"
 		  (and contents
-		       (replace-regexp-in-string "^" "   " contents)))))
+		       (replace-regexp-in-string "^" (make-string (length bullet) ?\s) contents)))))
        ;; Regular headline.
        (t (concat "---" (make-string level ?+) " " heading tags anchor "\n\n"
 		  contents))))))
@@ -512,7 +528,7 @@ Export is done in a buffer named \"*Org MD Export*\", which will
 be displayed when `org-export-show-temporary-export-buffer' is
 non-nil."
   (interactive)
-  (org-export-to-buffer 'md "*Org Foswiki Export*"
+  (org-export-to-buffer 'foswiki "*Org Foswiki Export*"
     async subtreep visible-only nil nil (lambda () (text-mode))))
 
 ;;;###autoload
@@ -526,7 +542,7 @@ this command to convert it."
 
 
 ;;;###autoload
-(defun org-fw-export-to-markdown (&optional async subtreep visible-only)
+(defun org-fw-export-to-fw(&optional async subtreep visible-only)
   "Export current buffer to a Foswiki file.
 
 If narrowing is active in the current buffer, only export its
@@ -548,7 +564,7 @@ contents of hidden elements.
 Return output file's name."
   (interactive)
   (let ((outfile (org-export-output-file-name ".foswiki" subtreep)))
-    (org-export-to-file 'md outfile async subtreep visible-only)))
+    (org-export-to-file 'foswiki outfile async subtreep visible-only)))
 
 ;;;###autoload
 (defun org-fw-publish-to-fw (plist filename pub-dir)
