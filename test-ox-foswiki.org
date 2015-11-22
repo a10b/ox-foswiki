@@ -3,7 +3,7 @@
 #+TAGS: @work @home @bibliothek @inovex @pf @we @schömberg @computer
 #+DATE: <2015-11-21 Sa>
 #+AUTHOR: Alexander Bub
-#+EMAIL: abub@1und1.de
+#+EMAIL: alexander.bub@inovex.de
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+OPTIONS: H:2 num:t toc:f \n:nil ::t |:t ^:t f:t tex:t 
@@ -14,8 +14,6 @@
 
 Foswiki supports 6 levels of headlines. This number is hard-coded -- the 
 variable =org-export-headline-levels= has no effect on the export.
-
-*** TODO Use the *TOC* macro for table of contents
 
 *** Level 3
 
@@ -31,6 +29,11 @@ Deeper levels of headings are exported as a simple bulleted list.
 
 Text paragraph following heading of level 7.
 
+******* Level 8
+
+Test paragraph following heading of level 8.
+
+
 ** Text formatting - inline
 
 /italic/ is ~_italic_~
@@ -45,7 +48,7 @@ _underlined_
 *** Source code block
 
 #+BEGIN_SRC perl
-print("hello world\n");
+  print("hello world\n");
 #+END_SRC
 **** TODO content is missing
 
@@ -58,10 +61,37 @@ But it's the second mouse that gets the cheese.
 
 **** TODO still markdown
 
+
 ** Lists
 
-*** TODO fix error
+*** Nesting
+- first level
+  + second level
+  + still second level
+    1. third level
+- back to first level
 
+*** Bullets
+
+**** hyphen
+- one
+- two
+- three
+
+**** plus sign
+- one
+- two
+- three
+
+**** numbered with dot
+1. one
+2. two 
+3. three
+
+**** numbered with paren
+1) one
+2) two
+3) three
 * Backlog
 
 Prioritization:
@@ -69,10 +99,10 @@ Prioritization:
 | Should: | [#B] |
 | Could:  | [#C] |
 
-** TODO [#A] error when exporting lists: "Wrong type argument: wholenump, -1"
-** TODO [#A] content is missing in source code blocks
+** DONE [#A] error when exporting lists: "Wrong type argument: wholenump, -1"
+** DONE [#A] content is missing in source code blocks
 ** TODO [#A] fix toc
-- replace html table of contents with ~%TOC%~ macro
+- replace html table of contents with foswiki's ~%TOC%~ macro
 - remove toc links from headings
 ** TODO [#A] underlined
 - check markup in foswiki
@@ -90,8 +120,11 @@ Prioritization:
 - new option: base URL of the wiki installation
 - replace links that match the URL with proper wiki links
 ** TODO [#C] upload page to wiki
+
 * Follow-up project ideas (out of scope)
 ** TODO generic, configurable exporter for different wiki markup dialects
 ** TODO import function twiki -> org mode
 ** TODO full round-trip editing
 ** TODO proper emacs (minor?) mode for wiki editing in org
+* Resources
+** [[http://orgmode.org/worg/dev/org-export-reference.html][Org export reference documentation]]

@@ -185,9 +185,10 @@ a communication channel."
   "Transcode EXAMPLE-BLOCK element into Foswiki format.
 CONTENTS is nil.  INFO is a plist used as a communication
 channel."
-  (format "<verbatim>\n%s\n</verbatim>" contents))
+  (let ((value (org-element-property :value example-block)))
+    (format "<verbatim>\n%s</verbatim>" value)))
 
-(ert-deftest org-fw-test-example-block ()
+(ert-deftest org-fw-test-example-block () ;; TODO: adjust
   "Test the example block filter for foswiki"
   (should (equal (org-fw-example-block nil "text" nil) 
                  "<verbatim>\ntext\n</verbatim>")))
@@ -225,11 +226,6 @@ a communication channel."
 	    (and (plist-get info :with-priority)
 		 (let ((char (org-element-property :priority headline)))
 		   (and char (format "[#%c] " char)))))
-	   (anchor
-	    (and (plist-get info :with-toc)
-		 (format "<a id=\"%s\"></a>"
-			 (or (org-element-property :CUSTOM_ID headline)
-			     (org-export-get-reference headline info)))))
 	   ;; Headline text without tags.
 	   (heading (concat todo priority title)))
 
@@ -244,7 +240,7 @@ a communication channel."
 		  (and contents
 		       (replace-regexp-in-string "^" (make-string (length bullet) ?\s) contents)))))
        ;; Regular headline.
-       (t (concat "---" (make-string level ?+) " " heading tags anchor "\n\n"
+       (t (concat "---" (make-string level ?+) " " heading tags "\n\n"
 		  contents))))))
 
 
@@ -283,15 +279,15 @@ a communication channel."
 					(org-list-parents-alist struct)))))
 			   "."))))
     (concat bullet
-	    (make-string (- 4 (length bullet)) ?\s )
+	    ;;(make-string (- 4 (length bullet)) ?\s)
 	    (case (org-element-property :checkbox item)
-	      (on "[X] ")      ;; %ICON{checked}% ?
+	      (on    "[X] ")   ;; %ICON{checked}% ?
 	      (trans "[-] ")   ;; %ICON{minus}% ?
-	      (off "[ ] "))    ;; %ICON{unchecked}% ?
+	      (off   "[ ] "))  ;; %ICON{unchecked}% ?
 	    (let ((tag (org-element-property :tag item)))
-	      (and tag (format "*%s:* "(org-export-data tag info))))
+	      (and tag (format "*%s:* " (org-export-data tag info))))
 	    (and contents
-		 (org-trim (replace-regexp-in-string "^" "     " contents))))))
+	      (org-trim (replace-regexp-in-string "^" "     " contents))))))
 
 ;;;; Keyword
 
@@ -300,10 +296,14 @@ a communication channel."
   "Transcode a KEYWORD element into Foswiki format.
 CONTENTS is nil.  INFO is a plist used as a communication
 channel."
-  (if (member (org-element-property :key keyword) '("MARKDOWN" "MD"))
-      (org-element-property :value keyword)
-    (org-export-with-backend 'html keyword contents info)))
-
+  (let ((key (org-element-property :key keyword))
+        (value (org-element-property :value keyword)))
+    (cond
+     ((member key '("MARKDOWN" "MD"))
+      (org-element-property :value keyword))
+     ((string= key "TOC")
+      "\n%TOC%\n"))))
+    ;;(org-export-with-backend 'html keyword contents info))))
 
 ;;;; Line Break
 
@@ -421,10 +421,15 @@ a communication channel."
 ;;;; Plain List
 
 (defun org-fw-plain-list (plain-list contents info)
-  "Transcode PLAIN-LIST element into Foswiki format.
-CONTENTS is the plain-list contents.  INFO is a plist used as
-a communication channel."
-  contents)
+  "Transcode PLAIN-LIST element from Org to Foswiki.
+CONTENTS is the plain-list contents.  INFO is a plist holding
+contextual information." 
+  (let* ;; (arg1 ;; (assoc :counter (org-element-map plain-list 'item
+       ((type (org-element-property :type plain-list)))
+    (format "%s"
+	    ;;(org-html-begin-plain-list type)
+	    contents ;;(org-html-end-plain-list type)
+            )))
 
 
 ;;;; Plain Text
@@ -491,7 +496,8 @@ CONTENTS is the transcoded contents string.  INFO is a plist
 holding export options."
   ;; Make sure CONTENTS is separated from table of contents and
   ;; footnotes with at least a blank line.
-  (org-trim (org-html-inner-template (concat "\n" contents "\n") info)))
+  ;;(org-trim (org-html-inner-template (concat "\n" contents "\n") info)))
+  contents)
 
 (defun org-fw-template (contents info)
   "Return complete document string after Foswiki conversion.
