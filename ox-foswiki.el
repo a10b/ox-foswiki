@@ -283,16 +283,15 @@ a communication channel."
 					(org-list-parents-alist struct)))))
 			   "."))))
     (concat bullet
-	    (make-string (- 4 (length bullet)) ? )
+	    (make-string (- 4 (length bullet)) ?\s )
 	    (case (org-element-property :checkbox item)
-	      (on "[X] ")      ;; %ICON{checked}%
-	      (trans "[-] ")   ;; %ICON{minus}%
-	      (off "[ ] "))    ;; %ICON{unchecked}%
+	      (on "[X] ")      ;; %ICON{checked}% ?
+	      (trans "[-] ")   ;; %ICON{minus}% ?
+	      (off "[ ] "))    ;; %ICON{unchecked}% ?
 	    (let ((tag (org-element-property :tag item)))
 	      (and tag (format "*%s:* "(org-export-data tag info))))
 	    (and contents
 		 (org-trim (replace-regexp-in-string "^" "     " contents))))))
-
 
 ;;;; Keyword
 

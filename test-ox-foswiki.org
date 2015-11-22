@@ -1,6 +1,12 @@
 #+TITLE: Ox-foswiki export backend
 #+STARTUP: indent
 #+TAGS: @work @home @bibliothek @inovex @pf @we @schömberg @computer
+#+DATE: <2015-11-21 Sa>
+#+AUTHOR: Alexander Bub
+#+EMAIL: abub@1und1.de
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+OPTIONS: H:2 num:t toc:f \n:nil ::t |:t ^:t f:t tex:t 
 
 * Supported elements
 
@@ -21,7 +27,6 @@ variable =org-export-headline-levels= has no effect on the export.
 
 Deeper levels of headings are exported as a simple bulleted list.
 
-
 ******* Level 7
 
 Text paragraph following heading of level 7.
@@ -32,20 +37,61 @@ Text paragraph following heading of level 7.
 _underlined_ 
 *bold* is ~*bold*~
 =code= is ~<literal>code</literal>~
-~verbatim /a/ _b_ *c* =d= text~ is ~<verbatim></verbatim>~ 
-+strike-through+ - TODO: is not mapped 
+~verbatim /a/ _b_ *c* =d= text~ is ~<verbatim>xyz</verbatim>~ 
++strike-through+ 
 
 ** Text formatting - blocks
+
 *** Source code block
+
 #+BEGIN_SRC perl
 print("hello world\n");
 #+END_SRC
 **** TODO content is missing
+
 *** Quote block
+
 #+BEGIN_QUOTE
 The early bird gets the worm. 
 But it's the second mouse that gets the cheese.
 #+END_QUOTE
+
 **** TODO still markdown
+
 ** Lists
+
 *** TODO fix error
+
+* Backlog
+
+Prioritization:
+| Must:   | [#A] |
+| Should: | [#B] |
+| Could:  | [#C] |
+
+** TODO [#A] error when exporting lists: "Wrong type argument: wholenump, -1"
+** TODO [#A] content is missing in source code blocks
+** TODO [#A] fix toc
+- replace html table of contents with ~%TOC%~ macro
+- remove toc links from headings
+** TODO [#A] underlined
+- check markup in foswiki
+- adjust implementation accordingly
+** TODO [#B] block quote
+- identify target markup 
+- implement
+** TODO [#B] tables
+** TODO [#B] complete list features
+- nested lists
+- enumerated lists 
+- map different org mode bullets (-, + , *)
+** TODO [#C] option to toggle TOC
+** TODO [#C] option for base URL for wikilinks 
+- new option: base URL of the wiki installation
+- replace links that match the URL with proper wiki links
+** TODO [#C] upload page to wiki
+* Follow-up project ideas (out of scope)
+** TODO generic, configurable exporter for different wiki markup dialects
+** TODO import function twiki -> org mode
+** TODO full round-trip editing
+** TODO proper emacs (minor?) mode for wiki editing in org
