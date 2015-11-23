@@ -497,7 +497,12 @@ holding export options."
   ;; Make sure CONTENTS is separated from table of contents and
   ;; footnotes with at least a blank line.
   ;;(org-trim (org-html-inner-template (concat "\n" contents "\n") info)))
-  contents)
+  (concat
+    ;; Table of contents
+    (let ((with-toc (plist-get info :with-toc)))
+      (when with-toc "\n%TOC%\n\n"))
+    ;; Document contents
+    contents))
 
 (defun org-fw-template (contents info)
   "Return complete document string after Foswiki conversion.
