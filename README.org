@@ -1,0 +1,22 @@
+#+TITLE: ox-foswiki
+
+A simple emacs org-mode export back-end for foswiki
+
+* Installation
+
+Put =ox-foswiki.el= into your load-path and the following into your ~/.emacs:
+
+#+BEGIN_SRC elisp
+(require 'ox-foswiki)
+#+END_SRC
+
+* Usage
+
+- In org-mode, hit =C-c C-e= to pop up the Org Export Dispatcher. 
+
+- Choose =f= for Foswiki.
+
+- Select the target: 
+  - =f= :: to temporary buffer
+  - =F= :: to file
+  - =O= :: to file and open
