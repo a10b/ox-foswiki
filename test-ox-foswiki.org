@@ -9,7 +9,6 @@
 #+OPTIONS: H:2 num:t toc:t \n:nil ::t |:t ^:t f:t tex:t 
 
 * Supported elements
-
 ** Headings
 
 Foswiki supports 6 levels of headlines. This number is hard-coded -- the 
@@ -33,11 +32,11 @@ Text paragraph following heading of level 7.
 
 ** Text formatting - inline
 
-/italic/ is ~_italic_~
+/italic/ 
 _underlined_ 
-*bold* is ~*bold*~
-=code= is ~<literal>code</literal>~
-~verbatim /a/ _b_ *c* =d= text~ is ~<verbatim>xyz</verbatim>~ 
+*bold* 
+=code= 
+~verbatim /a/ _b_ *c* =d= text~ 
 +strike-through+ 
 
 ** Text formatting - blocks
@@ -60,7 +59,12 @@ But it's the second mouse that gets the cheese.
 
 ** Lists
 
-*** TODO fix error
+- minus sign
+  1. one
+  2. two 
+  3. three
+     + sub one
+     + sub two
 
 * Backlog
 
@@ -77,12 +81,12 @@ Prioritization:
 ** TODO [#A] underlined
 - check markup in foswiki
 - adjust implementation accordingly
-** TODO [#B] block quote
+** TODO [#B] block quotes are still in markdown syntax
 - identify target markup 
 - implement
 ** TODO [#B] tables
 ** TODO [#B] complete list features
-- nested lists
+- nested lists have too many spaces
 - enumerated lists 
 - map different org mode bullets (-, + , *)
 ** TODO [#C] option to toggle TOC
